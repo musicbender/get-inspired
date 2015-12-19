@@ -31,6 +31,11 @@ var showQuestion = function(question) {
 	return result;
 };
 
+var showAnswerers = function(answers){
+    var log = console.log(answers);
+    return log;
+}
+
 
 // this function takes the results object from StackOverflow
 // and returns the number of results and tags to be appended to DOM
@@ -81,6 +86,37 @@ var getUnanswered = function(tags) {
 	});
 };
 
+var getInspiration = function(tags) {
+    var request = { 
+		tagged: tags,
+		site: 'stackoverflow',
+		order: 'desc',
+		sort: 'creation'
+	};
+	
+	$.ajax({
+		url: "http://api.stackexchange.com/2.2/tags/" + request.tagged + "/top-answerers",
+		data: request,
+		dataType: "jsonp",//use jsonp to avoid cross origin issues
+		type: "GET",
+	})
+	.done(function(result){ //this waits for the ajax to return with a succesful promise object
+        console.log(result.items);
+		var searchResults = showSearchResults(request.tagged, result.items.length);
+
+		$('.search-results').html(searchResults);
+		//$.each is a higher order function. It takes an array and a function as an argument.
+		//The function is executed once for each item in the array.
+		$.each(result.items, function(i, item) {
+			var answer = showAnswerers(item);
+			$('.results').append(answer);
+		});
+	})
+	.fail(function(jqXHR, error){ //this waits for the ajax to return with an error promise object
+		var errorElem = showError(error);
+		$('.search-results').append(errorElem);
+	});
+};
 
 $(document).ready( function() {
 	$('.unanswered-getter').submit( function(e){
@@ -91,4 +127,11 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+    
+    $('.inspiration-getter').submit(function(e){
+        e.preventDefault();
+        $('results').html('');
+        var tags = $(this).find("input[name='tags']").val();
+        getInspiration(tags);
+    });
 });
