@@ -88,14 +88,11 @@ var getUnanswered = function(tags) {
 
 var getInspiration = function(tags) {
     var request = { 
-		tagged: tags,
 		site: 'stackoverflow',
-		order: 'desc',
-		sort: 'creation'
 	};
 	
 	$.ajax({
-		url: "http://api.stackexchange.com/2.2/tags/" + request.tagged + "/top-answerers",
+		url: "http://api.stackexchange.com/2.2/tags/" + tags + "/top-answerers/all_time",
 		data: request,
 		dataType: "jsonp",//use jsonp to avoid cross origin issues
 		type: "GET",
