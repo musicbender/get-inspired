@@ -32,8 +32,23 @@ var showQuestion = function(question) {
 };
 
 var showAnswerers = function(answers){
+    var result = $('.templates .answerer').clone();
+    
+    var answerName = result.find('.answerer-name');
+    answerName.text(answers.user.display_name);
+    
+    var answerScore = result.find('.answerer-score');
+    answerScore.text(answers.score);
+    
+    var answerPostCount = result.find('.answerer-postcount');
+    answerPostCount.text(answers.post_count);
+    
+    var answerRep = result.find('.answerer-rep');
+    answerRep.text(answers.user.reputation);
+    
     var log = console.log(answers);
-    return log;
+    
+    return result;
 }
 
 
@@ -99,7 +114,7 @@ var getInspiration = function(tags) {
 	})
 	.done(function(result){ //this waits for the ajax to return with a succesful promise object
         console.log(result.items);
-		var searchResults = showSearchResults(request.tagged, result.items.length);
+		var searchResults = showSearchResults(tags, result.items.length);
 
 		$('.search-results').html(searchResults);
 		//$.each is a higher order function. It takes an array and a function as an argument.
